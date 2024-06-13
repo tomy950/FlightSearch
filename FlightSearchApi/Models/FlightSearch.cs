@@ -14,32 +14,7 @@ namespace FlightSearchApi.Models
             public string Currency { get; set; }
            
         }
-        public static ValidationResult ValidateDepartureDate(string departureDate, ValidationContext context)
-        {
-            if (DateTime.TryParse(departureDate, out var depDate))
-            {
-                if (depDate < DateTime.Today)
-                {
-                    return new ValidationResult("Departure Date must be today or in the future.");
-                }
-                return ValidationResult.Success;
-            }
-            return new ValidationResult("Invalid Departure Date.");
-        }
-
-        public static ValidationResult ValidateReturnDate(string returnDate, ValidationContext context)
-        {
-            var instance = context.ObjectInstance as FlightSearch.Request;
-            if (DateTime.TryParse(returnDate, out var retDate) && DateTime.TryParse(instance.DepartureDate, out var depDate))
-            {
-                if (retDate <= depDate)
-                {
-                    return new ValidationResult("Return Date must be later than Departure Date.");
-                }
-                return ValidationResult.Success;
-            }
-            return new ValidationResult("Invalid Return Date.");
-        }
+        
     
     public class Response
     {
