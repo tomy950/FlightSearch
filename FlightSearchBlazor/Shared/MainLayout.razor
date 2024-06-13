@@ -1,0 +1,88 @@
+﻿@inherits LayoutComponentBase
+
+<div class="page">
+    <div class="sidebar">
+        <nav>
+            <ul>
+                <li>
+                    <NavLink href="/" Match="NavLinkMatch.All">
+                        <i class="fas fa-home"></i> Home
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink href="flight-offers">
+                        <i class="fas fa-search"></i> Flight Search
+                    </NavLink>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="main">
+        <div class="top-row px-4">
+            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </div>
+</div>
+
+<style>
+    .page {
+        display: flex;
+    }
+
+    .sidebar {
+        width: 200px;
+        background-color: #6a0dad; /* Dark purple */
+        color: #fff;
+        padding: 15px;
+        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        height: 100vh;
+        position: fixed;
+        transition: width 0.3s;
+    }
+
+    .sidebar:hover {
+        width: 250px;
+    }
+
+    .main {
+        margin-left: 220px; /* Initial margin */
+        flex-grow: 1;
+        padding: 20px;
+        transition: margin-left 0.3s;
+    }
+
+    .sidebar:hover ~ .main {
+        margin-left: 270px; /* Margin when sidebar is expanded */
+    }
+
+    .sidebar nav ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .sidebar nav ul li {
+        margin-bottom: 10px;
+    }
+
+    .sidebar nav ul li a {
+        text-decoration: none;
+        color: #fff;
+        display: block;
+        padding: 10px;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+    }
+
+    .sidebar nav ul li a:hover {
+        background-color: #9b30ff; /* Light purple */
+    }
+
+    .sidebar nav ul li i {
+        margin-right: 10px; /* Add some space between icon and text */
+    }
+</style>

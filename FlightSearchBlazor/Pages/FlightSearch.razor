@@ -1,0 +1,130 @@
+﻿@page "/flight-offers"
+@inject HttpClient Http
+@using System.Text.RegularExpressions
+@using System.Net.Http.Json
+
+<h3 class="my-4 text-center">Search Flight Offers</h3>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card p-4 shadow-sm">
+                <div class="form-group mb-3">
+                    <label for="origin">Origin Airport</label>
+                    <input type="text" @bind="originLocationCode" class="form-control" id="origin" placeholder="Enter origin airport IATA code" />
+                                 
+                 </div>
+                <div class="form-group mb-3">
+                    <label for="destination">Destination Airport</label>
+                    <input type="text" @bind="destinationLocationCode" class="form-control" id="destination" placeholder="Enter destination airport IATA code" />
+                    
+                </div>
+                <div class="form-group mb-3">
+                    <label for="departureDate">Departure Date</label>
+                    <input type="date" @bind="departureDate" class="form-control" id="departureDate" />
+                                 
+                  </div>
+                <div class="form-group mb-3">
+                    <label for="returnDate">Return Date</label>
+                    <input type="date" @bind="returnDate" class="form-control" id="returnDate" />
+                   
+                </div>
+                <div class="form-group mb-3">
+                    <label for="adults">Number of Passengers</label>
+                    <input type="number" @bind="numberOfPassengers" class="form-control" id="adults" min="1" />
+                                 </div>
+                <div class="form-group mb-3">
+                    <label for="currency">Currency</label>
+                    <select @bind="currency" class="form-control" id="currency">
+                        <option value="USD">USD</option>
+                        <option value="EUR">EUR</option>
+                        <option value="HRK">HRK</option>
+                    </select>
+                </div>
+                <button @onclick="SearchFlightOffers" class="btn btn-primary w-100">Search</button>
+                 @if (!string.IsNullOrEmpty(errorMessage))
+                 {
+                    <div class="text-danger mt-2">@errorMessage</div>
+                 }
+            </div>
+        </div>
+    </div>
+
+    @if (flightOffers != null)
+    {
+        <div class="mt-4">
+            <h3 class="text-center">Flight Offers</h3>
+            <table class="table table-striped table-hover mt-3">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Departure Airport</th>
+                        <th>Arrival Airport</th>
+                        <th>Departure Date</th>
+                        <th>Return Date</th>
+                        <th>Number of Stops</th>
+                        <th>Number of Passengers</th>
+                        <th>Currency</th>
+                        <th>Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var offer in flightOffers)
+                    {
+                        <tr>
+                            <td>@offer.OriginLocation</td>
+                            <td>@offer.DestinationLocation</td>
+                            <td>@offer.DepartureDate</td>
+                            <td>@offer.ReturnDate</td>
+                            <td>@offer.NumberOfStops</td>
+                            <td>@offer.NumberOfPassengers</td>
+                            <td>@offer.Currency</td>
+                            <td>@offer.TotalPrice</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+           
+        </div>
+    }
+</div>
+
+@code {
+    private string originLocationCode;
+    private string destinationLocationCode;
+    private DateTime departureDate;
+    private DateTime returnDate;
+    private int numberOfPassengers;
+    private string currency = "USD";
+    private List<FlightOffersResponse> flightOffers;
+    private string errorMessage;
+
+    private async Task SearchFlightOffers()
+    {
+        errorMessage = string.Empty;
+        try
+        {
+            string departureDateString = departureDate.ToString("yyyy-MM-dd");
+            string returnDateString = returnDate.ToString("yyyy-MM-dd");
+
+            var response = await Http.GetFromJsonAsync<List<FlightOffersResponse>>($"api/FlightOffers/search?originLocationCode={originLocationCode}&destinationLocationCode={destinationLocationCode}&departureDate={departureDateString}&returnDate={returnDateString}&numberOfPassengers={numberOfPassengers}&currency={currency}");
+            flightOffers = response;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Molimo unesite pravilno podatke";
+        }
+
+    }
+    public class FlightOffersResponse
+    {
+        public string OriginLocation { get; set; }
+        public string DestinationLocation { get; set; }
+        public string DepartureDate { get; set; }
+        public string ReturnDate { get; set; }
+        public int NumberOfStops { get; set; }
+        public int NumberOfPassengers { get; set; }
+        public string Currency { get; set; }
+        public string TotalPrice { get; set; }
+    }
+
+}
